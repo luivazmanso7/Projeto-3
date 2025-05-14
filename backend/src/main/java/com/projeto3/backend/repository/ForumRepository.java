@@ -1,6 +1,6 @@
-package com.projeto.backend.repository;
+package com.projeto3.backend.repository;
 
-import com.projeto.backend.entity.Forum;
+import com.projeto3.backend.model.Forum;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

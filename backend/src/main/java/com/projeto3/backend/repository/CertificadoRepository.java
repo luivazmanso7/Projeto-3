@@ -1,15 +1,14 @@
-package com.projeto.backend.repository;
+package com.projeto3.backend.repository;
 
-import com.projeto.backend.entity.Certificado;
+import com.projeto3.backend.model.Certificado;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
-public interface CertificadoRepository extends JpaRepository<Certificado, Long> {
+public interface CertificadoRepository extends JpaRepository<Certificado, Integer> {
 
-    List<Certificado> findByNomeUsuario(String nomeUsuario);
+    List<Certificado> findByUsuarioNome(String nomeUsuario);
 
-    List<Certificado> findByNomeCurso(String nomeCurso);
+    List<Certificado> findByCursoNomeCurso(String nomeCurso);
 
-    List<Certificado> findByNomeUsuarioAndNomeCurso(String nomeUsuario, String nomeCurso);
+    List<Certificado> findByUsuarioNomeAndCursoNomeCurso(String nomeUsuario, String nomeCurso);
 }

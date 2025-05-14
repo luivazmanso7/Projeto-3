@@ -1,7 +1,7 @@
-package com.projeto.backend.service;
+package com.projeto3.backend.service;
 
-import com.projeto.backend.entity.Curso;
-import com.projeto.backend.repository.CursoRepository;
+import com.projeto3.backend.model.Curso;
+import com.projeto3.backend.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

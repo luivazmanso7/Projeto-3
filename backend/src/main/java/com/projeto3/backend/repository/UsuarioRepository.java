@@ -1,12 +1,12 @@
-package com.projeto.backend.repository;
+package com.projeto3.backend.repository;
 
-import com.projeto.backend.entity.Usuario;
+import com.projeto3.backend.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     // Buscar por e-mail (usado para login ou verificação de existência)
     Optional<Usuario> findByEmail(String email);

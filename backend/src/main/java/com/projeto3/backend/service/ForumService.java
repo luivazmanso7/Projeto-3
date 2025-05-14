@@ -1,7 +1,7 @@
-package com.projeto.backend.service;
+package com.projeto3.backend.service;
 
-import com.projeto.backend.entity.Forum;
-import com.projeto.backend.repository.ForumRepository;
+import com.projeto3.backend.model.Forum;
+import com.projeto3.backend.repository.ForumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
-package com.projeto.backend.service;
+package com.projeto3.backend.service;
 
-import com.projeto.backend.entity.Postagem;
-import com.projeto.backend.repository.PostagemRepository;
+import com.projeto3.backend.model.Postagem;
+import com.projeto3.backend.repository.PostagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

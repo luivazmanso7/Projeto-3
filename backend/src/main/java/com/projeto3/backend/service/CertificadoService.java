@@ -1,7 +1,7 @@
-package com.projeto.backend.service;
+package com.projeto3.backend.service;
 
-import com.projeto.backend.entity.Certificado;
-import com.projeto.backend.repository.CertificadoRepository;
+import com.projeto3.backend.model.Certificado;
+import com.projeto3.backend.repository.CertificadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +22,19 @@ public class CertificadoService {
         return certificadoRepository.findAll();
     }
 
-    public Optional<Certificado> buscarPorId(Long id) {
+    public Optional<Certificado> buscarPorId(Integer id) {
         return certificadoRepository.findById(id);
     }
 
     public List<Certificado> buscarPorUsuario(String nomeUsuario) {
-        return certificadoRepository.findByNomeUsuario(nomeUsuario);
+        return certificadoRepository.findByUsuarioNome(nomeUsuario);
     }
 
     public List<Certificado> buscarPorCurso(String nomeCurso) {
-        return certificadoRepository.findByNomeCurso(nomeCurso);
+        return certificadoRepository.findByCursoNomeCurso(nomeCurso);
     }
 
-    public void excluirCertificado(Long id) {
+    public void excluirCertificado(Integer id) {
         certificadoRepository.deleteById(id);
     }
 }

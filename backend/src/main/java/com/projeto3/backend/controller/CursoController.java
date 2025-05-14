@@ -1,7 +1,7 @@
-package com.projeto.backend.controller;
+package com.projeto3.backend.controller;
 
-import com.projeto.backend.entity.Curso;
-import com.projeto.backend.service.CursoService;
+import com.projeto3.backend.model.Curso;
+import com.projeto3.backend.service.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

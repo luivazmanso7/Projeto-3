@@ -1,9 +1,10 @@
-package com.projeto.backend.repository;
+package com.projeto3.backend.repository;
 
-import com.projeto.backend.entity.Curso;
+import com.projeto3.backend.model.Curso;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
+
+
 
 public interface CursoRepository extends JpaRepository<Curso, Long> {
 

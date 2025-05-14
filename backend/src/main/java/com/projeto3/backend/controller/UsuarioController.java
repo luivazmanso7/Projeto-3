@@ -1,8 +1,8 @@
-package com.projeto.backend.controller;
+package com.projeto3.backend.controller;
 
-import com.projeto.backend.entity.Certificado;
-import com.projeto.backend.entity.Usuario;
-import com.projeto.backend.service.UsuarioService;
+import com.projeto3.backend.model.Certificado;
+import com.projeto3.backend.model.Usuario;
+import com.projeto3.backend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +23,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Usuario> buscarPorId(@PathVariable Long id) {
+    public Optional<Usuario> buscarPorId(@PathVariable Integer id) {
         return usuarioService.buscarPorId(id);
     }
 
@@ -38,12 +38,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/{idUsuario}/certificados")
-    public void salvarCertificado(@PathVariable Long idUsuario, @RequestBody Certificado certificado) {
+    public void salvarCertificado(@PathVariable Integer idUsuario, @RequestBody Certificado certificado) {
         usuarioService.salvarCertificado(idUsuario, certificado);
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
+    public void deletar(@PathVariable Integer id) {
         usuarioService.deletar(id);
     }
 }

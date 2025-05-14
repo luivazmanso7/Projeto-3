@@ -1,52 +1,50 @@
-package com.projeto.backend.service;
+package com.projeto3.backend.service;
 
-import com.projeto.backend.entity.Certificado;
-import com.projeto.backend.entity.Usuario;
-import com.projeto.backend.repository.CertificadoRepository;
-import com.projeto.backend.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.projeto3.backend.model.Usuario;
+import com.projeto3.backend.model.Certificado;
+import com.projeto3.backend.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private CertificadoRepository certificadoRepository;
-
-    public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
-    }
-
-    public Optional<Usuario> buscarPorId(Long id) {
-        return usuarioRepository.findById(id);
-    }
-
-    public Optional<Usuario> buscarPorEmail(String email) {
-        return usuarioRepository.findByEmail(email);
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
     }
 
     public Usuario salvar(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
-    public void deletar(Long id) {
-        usuarioRepository.deleteById(id);
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
     }
 
-    public void salvarCertificado(Long idUsuario, Certificado certificado) {
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    public Optional<Usuario> buscarPorId(Integer id) {
+        return usuarioRepository.findById(id);
+    }
+    
 
-        certificado.setUsuario(usuario);
-        certificadoRepository.save(certificado);
+    public void deletar(Integer id) {
+        usuarioRepository.deleteById(id);
+    }
+    
 
-        usuario.getCertificados().add(certificado);
-        usuarioRepository.save(usuario);
+    public void salvarCertificado(Integer idUsuario, Certificado certificado) {
+        Optional<Usuario> opt = usuarioRepository.findById(idUsuario);
+        if (opt.isPresent()) {
+            Usuario usuario = opt.get();
+            usuario.getCertificados().add(certificado);
+            usuarioRepository.save(usuario);
+        } else {
+            throw new RuntimeException("Usuário não encontrado: " + idUsuario);
+        }
+    }
+    public Optional<Usuario> buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }

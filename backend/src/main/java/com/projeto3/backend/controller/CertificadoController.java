@@ -1,7 +1,7 @@
-package com.projeto.backend.controller;
+package com.projeto3.backend.controller;
 
-import com.projeto.backend.entity.Certificado;
-import com.projeto.backend.service.CertificadoService;
+import com.projeto3.backend.model.Certificado;
+import com.projeto3.backend.service.CertificadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +22,7 @@ public class CertificadoController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Certificado> buscarPorId(@PathVariable Long id) {
+    public Optional<Certificado> buscarPorId(@PathVariable Integer id) {
         return certificadoService.buscarPorId(id);
     }
 
@@ -42,7 +42,7 @@ public class CertificadoController {
     }
 
     @DeleteMapping("/{id}")
-    public void excluir(@PathVariable Long id) {
+    public void excluir(@PathVariable Integer id) {
         certificadoService.excluirCertificado(id);
     }
 }

@@ -1,7 +1,7 @@
-package com.projeto.backend.controller;
+package com.projeto3.backend.controller;
 
-import com.projeto.backend.entity.Forum;
-import com.projeto.backend.service.ForumService;
+import com.projeto3.backend.model.Forum;
+import com.projeto3.backend.service.ForumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

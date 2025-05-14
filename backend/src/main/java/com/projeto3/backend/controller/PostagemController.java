@@ -1,7 +1,7 @@
-package com.projeto.backend.controller;
+package com.projeto3.backend.controller;
 
-import com.projeto.backend.entity.Postagem;
-import com.projeto.backend.service.PostagemService;
+import com.projeto3.backend.model.Postagem;
+import com.projeto3.backend.service.PostagemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

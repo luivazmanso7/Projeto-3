@@ -86,5 +86,14 @@ public class Usuario {
         System.out.printf("Administrador %d excluiu postagem %d%n", this.id, postagem.getIdPost());
     }
 
+     // getter necessário para usuario.getCertificados() funcionar:
+     public List<Certificado> getCertificados() {
+        return certificados;
+    }
+
+    // (opcional) setter, caso precise:
+    public void setCertificados(List<Certificado> certificados) {
+        this.certificados = certificados;
+    }
     // getters/setters omitidos para brevidade...
 }
