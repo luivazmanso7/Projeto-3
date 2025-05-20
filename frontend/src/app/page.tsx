@@ -2,101 +2,83 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
+      <header className="flex justify-between items-center p-6 bg-white shadow-md sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <Image src="/logo-brasfi.jpg" alt="Logo da BRASFI" width={40} height={40} />
+          <span className="text-xl font-bold text-blue-800">BRASFI</span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+        <nav className="hidden md:flex gap-6 text-sm font-medium text-gray-700">
+          <a href="#inicio" className="hover:text-blue-600">Início</a>
+          <a href="#sobre" className="hover:text-blue-600">Sobre Nós</a>
+          <a href="#servicos" className="hover:text-blue-600">Serviços</a>
+          <a href="#contato" className="hover:text-blue-600">Contato</a>
+          <a href="#saiba-mais" className="hover:text-blue-600">Saiba Mais</a>
+        </nav>
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/login"
+          className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 text-sm"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+          Entrar
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
+      </header>
+
+      {/* Hero */}
+      <section id="inicio" className="flex flex-col items-center justify-center text-center px-8 py-24 bg-gradient-to-r from-blue-50 to-blue-100">
+        <h1 className="text-4xl md:text-6xl font-bold text-blue-800 mb-6">Bem-vindo à BRASFI</h1>
+        <p className="text-lg md:text-xl text-gray-700 max-w-2xl mb-6">
+          Participe de cursos, webinars e eventos com emissão automática de certificados.
+        </p>
+        <a href="#saiba-mais" className="bg-blue-700 text-white px-6 py-3 rounded hover:bg-blue-800 text-lg">
+          Saiba mais
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Sobre Nós */}
+      <section id="sobre" className="px-8 py-16 bg-white text-gray-800">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">Sobre Nós</h2>
+          <p className="text-lg">
+            A BRASFI é uma plataforma educacional dedicada à capacitação por meio de cursos e eventos online, com foco na excelência e inclusão.
+          </p>
+        </div>
+      </section>
+
+      {/* Serviços */}
+      <section id="servicos" className="px-8 py-16 bg-gray-100 text-gray-800">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">Serviços</h2>
+          <ul className="text-lg space-y-2">
+            <li>✔️ Cursos online com certificado</li>
+            <li>✔️ Webinars e Workshops</li>
+            <li>✔️ Espaço de discussão e comunidade</li>
+            <li>✔️ Plataforma integrada com emissão automática de certificados</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Contato */}
+      <section id="contato" className="px-8 py-16 bg-white text-gray-800">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">Contato</h2>
+          <p className="text-lg mb-4">Entre em contato conosco pelo e-mail: <strong>contato@brasfi.org</strong></p>
+        </div>
+      </section>
+
+      {/* Saiba Mais */}
+      <section id="saiba-mais" className="px-8 py-16 bg-blue-50 text-gray-800">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">Saiba Mais</h2>
+          <p className="text-lg">
+            Explore os cursos e eventos disponíveis, inscreva-se e receba certificados de participação automaticamente. Faça parte da comunidade BRASFI!
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-blue-900 text-white py-6 text-center text-sm">
+        © {new Date().getFullYear()} BRASFI - Todos os direitos reservados.
       </footer>
     </div>
   );
