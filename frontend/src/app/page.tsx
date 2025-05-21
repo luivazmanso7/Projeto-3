@@ -6,7 +6,7 @@ export default function Home() {
       {/* Navbar */}
       <header className="flex justify-between items-center p-6 bg-white shadow-md sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <Image src="/logo-brasfi.jpg" alt="Logo da BRASFI" width={40} height={40} />
+          <Image src="/brasfi-logo.jpg" alt="Logo da BRASFI" width={40} height={40} />
           <span className="text-xl font-bold text-blue-800">BRASFI</span>
         </div>
         <nav className="hidden md:flex gap-6 text-sm font-medium text-gray-700">

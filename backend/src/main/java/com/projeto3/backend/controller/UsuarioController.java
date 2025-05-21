@@ -4,6 +4,8 @@ import com.projeto3.backend.model.Certificado;
 import com.projeto3.backend.model.Usuario;
 import com.projeto3.backend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,5 +47,21 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Integer id) {
         usuarioService.deletar(id);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Usuario usuarioLogin) {
+        Optional<Usuario> usuarioOpt = usuarioService.buscarPorEmail(usuarioLogin.getEmail());
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            if (usuario.getSenha().equals(usuarioLogin.getSenha())) {
+                return ResponseEntity.ok(usuario); // ou retorne só o id/nome/email se preferir
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+        }
     }
 }
