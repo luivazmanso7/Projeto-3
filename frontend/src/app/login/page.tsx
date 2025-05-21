@@ -1,79 +1,96 @@
-"use client";
-
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [formData, setFormData] = useState({
-    nome: "",
-    email: "",
-    senha: "",
-  });
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/usuarios", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      const response = await fetch('http://localhost:8080/usuarios/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
       });
 
       if (response.ok) {
-        alert("Usuário cadastrado com sucesso!");
+        const usuario = await response.json();
+        console.log('Login realizado:', usuario);
+        router.push('/dashboard'); // ou qualquer rota após login
       } else {
-        const erro = await response.text();
-        alert("Erro ao cadastrar: " + erro);
+        const msg = await response.text();
+        setErro(msg);
       }
     } catch (error) {
-      alert("Erro de conexão com o backend");
+      setErro('Erro ao conectar com o servidor.');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Entrar / Cadastrar</h2>
+    <div className="min-h-screen flex flex-col bg-[#FFFCE5] text-black">
+      {/* Navbar */}
+      <header className="flex justify-between items-center p-6 bg-[#9BB61B]">
+        <div className="flex items-center">
+          <Image src="/brasfi-logo.jpg" alt="Logo da BRASFI" width={50} height={50} />
+        </div>
+      </header>
 
-        <input
-          type="text"
-          name="nome"
-          placeholder="Nome"
-          value={formData.nome}
-          onChange={handleChange}
-          required
-          className="w-full mb-4 p-3 border rounded"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="w-full mb-4 p-3 border rounded"
-        />
-        <input
-          type="password"
-          name="senha"
-          placeholder="Senha"
-          value={formData.senha}
-          onChange={handleChange}
-          required
-          className="w-full mb-6 p-3 border rounded"
-        />
-
-        <button
-          type="submit"
-          className="w-full bg-blue-700 text-white py-3 rounded hover:bg-blue-800"
+      {/* Conteúdo do Login */}
+      <main className="flex-grow flex flex-col items-center justify-center px-4">
+        <h1 className="text-3xl font-bold mb-6">Login</h1>
+        <form
+          onSubmit={handleLogin}
+          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-sm w-full"
         >
-          Cadastrar
-        </button>
-      </form>
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="senha">
+              Senha
+            </label>
+            <input
+              id="senha"
+              type="password"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+
+          {erro && <p className="text-red-500 text-sm mb-4">{erro}</p>}
+
+          <button
+            type="submit"
+            className="bg-[#281719] text-white font-bold py-2 px-4 rounded w-full hover:brightness-125"
+          >
+            Entrar
+          </button>
+        </form>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-[#9BB61B] text-white py-4 text-center text-sm">
+        © {new Date().getFullYear()} BRASFI - Todos os direitos reservados.
+      </footer>
     </div>
   );
 }
