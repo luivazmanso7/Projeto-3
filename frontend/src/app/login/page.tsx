@@ -4,32 +4,27 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleEntrar = (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch('http://localhost:8080/usuarios/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha }),
-      });
-
-      if (response.ok) {
-        const usuario = await response.json();
-        console.log('Login realizado:', usuario);
-        router.push('/dashboard'); // ou qualquer rota após login
-      } else {
-        const msg = await response.text();
-        setErro(msg);
-      }
-    } catch (error) {
-      setErro('Erro ao conectar com o servidor.');
+    if (!nome || !email || !senha) {
+      setErro('Preencha todos os campos.');
+      return;
     }
+
+    // Salvar o usuário no localStorage
+    const novoUsuario = { nome, email, senha };
+    localStorage.setItem('usuarioAtual', JSON.stringify(novoUsuario));
+
+    // Simular login
+    console.log('Usuário salvo localmente:', novoUsuario);
+    router.push('/discussoes'); // ou página pós-login
   };
 
   return (
@@ -43,35 +38,40 @@ export default function LoginPage() {
 
       {/* Conteúdo do Login */}
       <main className="flex-grow flex flex-col items-center justify-center px-4">
-        <h1 className="text-3xl font-bold mb-6">Login</h1>
+        <h1 className="text-3xl font-bold mb-6">Entrar</h1>
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleEntrar}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-sm w-full"
         >
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="email">
-              Email
-            </label>
+            <label className="block text-black text-sm font-bold mb-2">Nome</label>
             <input
-              id="email"
+              type="text"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2">Email</label>
+            <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight"
               required
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="senha">
-              Senha
-            </label>
+            <label className="block text-black text-sm font-bold mb-2">Senha</label>
             <input
-              id="senha"
               type="password"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight"
               required
             />
           </div>
