@@ -47,4 +47,16 @@ public class UsuarioService {
     public Optional<Usuario> buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
+
+    //Admin padrão
+    public void criarAdmin(){
+        if (!usuarioRepository.existsByEmail("admin@admin.com")) {
+        Usuario admin = new Usuario();
+        admin.setNome("Admin");
+        admin.setEmail("admin@admin.com");
+        admin.setSenha("admin123"); 
+        admin.setAdministrador(true);
+        usuarioRepository.save(admin);
+    }
+    }
 }
