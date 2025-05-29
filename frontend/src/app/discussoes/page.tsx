@@ -21,36 +21,37 @@ export default function PaginaDiscussoes() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [conteudo, setConteudo] = useState('');
   const [comentariosTexto, setComentariosTexto] = useState<{ [key: number]: string }>({});
-  const [usuarioAtual, setUsuarioAtual] = useState<string>('Você');
+  const [usuarioAtual, setUsuarioAtual] = useState<{ nome: string; email: string } | null>(null);
   const [editandoPostId, setEditandoPostId] = useState<number | null>(null);
   const [conteudoEditado, setConteudoEditado] = useState<string>('');
 
-  // Carregar posts ao iniciar
+  // Carregar usuário e posts
   useEffect(() => {
-    const user = localStorage.getItem('usuarioAtual');
-    if (user) {
-      const { nome } = JSON.parse(user);
-      setUsuarioAtual(nome);
-      const chavePosts = `posts_${nome}`;
-      const salvos = localStorage.getItem(chavePosts);
-      if (salvos) setPosts(JSON.parse(salvos));
+    const userStr = localStorage.getItem('usuarioAtual');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      setUsuarioAtual(user);
+    }
+
+    const postsSalvos = localStorage.getItem('posts_globais');
+    if (postsSalvos) {
+      setPosts(JSON.parse(postsSalvos));
     }
   }, []);
 
-  // Salvar posts sempre que forem atualizados
+  // Salvar posts SOMENTE quando o usuário já foi carregado
   useEffect(() => {
     if (usuarioAtual) {
-      const chavePosts = `posts_${usuarioAtual}`;
-      localStorage.setItem(chavePosts, JSON.stringify(posts));
+      localStorage.setItem('posts_globais', JSON.stringify(posts));
     }
   }, [posts, usuarioAtual]);
 
   const criarPost = () => {
-    if (!conteudo.trim()) return;
+    if (!conteudo.trim() || !usuarioAtual) return;
     const novoPost: Post = {
       id: Date.now(),
       conteudo,
-      autor: usuarioAtual,
+      autor: usuarioAtual.nome,
       data: new Date().toLocaleString(),
       curtidas: 0,
       comentarios: [],
@@ -60,22 +61,24 @@ export default function PaginaDiscussoes() {
   };
 
   const curtirPost = (id: number) => {
+    if (!usuarioAtual) return;
     setPosts(posts.map(post =>
-      post.id === id && post.autor !== usuarioAtual
+      post.id === id && post.autor !== usuarioAtual.nome
         ? { ...post, curtidas: post.curtidas + 1 }
         : post
     ));
   };
 
   const comentarPost = (id: number) => {
+    if (!usuarioAtual) return;
     const texto = comentariosTexto[id];
-    if (!texto.trim()) return;
+    if (texto.length == 0) return;
 
     setPosts(posts.map(post =>
-      post.id === id && post.autor !== usuarioAtual
+      post.id === id && post.autor !== usuarioAtual.nome
         ? {
             ...post,
-            comentarios: [...post.comentarios, { id: Date.now(), autor: usuarioAtual, texto }],
+            comentarios: [...post.comentarios, { id: Date.now(), autor: usuarioAtual.nome, texto }],
           }
         : post
     ));
@@ -151,16 +154,16 @@ export default function PaginaDiscussoes() {
 
                 <div className="flex items-center gap-4">
                   <button
-                    disabled={post.autor === usuarioAtual}
+                    disabled={usuarioAtual?.nome === post.autor}
                     onClick={() => curtirPost(post.id)}
                     className={`text-sm ${
-                      post.autor === usuarioAtual ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:underline'
+                      usuarioAtual?.nome === post.autor ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:underline'
                     }`}
                   >
                     Curtir ({post.curtidas})
                   </button>
 
-                  {post.autor === usuarioAtual && (
+                  {usuarioAtual?.nome === post.autor && (
                     <>
                       <button
                         onClick={() => iniciarEdicao(post.id, post.conteudo)}
@@ -187,11 +190,11 @@ export default function PaginaDiscussoes() {
                     }
                     placeholder="Comentar..."
                     className="border rounded px-2 py-1 w-full"
-                    disabled={post.autor === usuarioAtual}
+                    disabled={usuarioAtual?.nome === post.autor}
                   />
                   <button
                     onClick={() => comentarPost(post.id)}
-                    disabled={post.autor === usuarioAtual}
+                    disabled={usuarioAtual?.nome === post.autor}
                     className="mt-1 text-sm text-green-600 hover:underline"
                   >
                     Comentar
