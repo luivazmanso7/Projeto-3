@@ -18,25 +18,20 @@ export default function LoginPage() {
       return;
     }
 
-    // Salvar o usuário no localStorage
     const novoUsuario = { nome, email, senha };
     localStorage.setItem('usuarioAtual', JSON.stringify(novoUsuario));
 
-    // Simular login
-    console.log('Usuário salvo localmente:', novoUsuario);
-    router.push('/discussoes'); // ou página pós-login
+    router.push('/discussoes');
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFCE5] text-black">
-      {/* Navbar */}
       <header className="flex justify-between items-center p-6 bg-[#9BB61B]">
         <div className="flex items-center">
           <Image src="/brasfi-logo.jpg" alt="Logo da BRASFI" width={50} height={50} />
         </div>
       </header>
 
-      {/* Conteúdo do Login */}
       <main className="flex-grow flex flex-col items-center justify-center px-4">
         <h1 className="text-3xl font-bold mb-6">Entrar</h1>
         <form
@@ -87,7 +82,6 @@ export default function LoginPage() {
         </form>
       </main>
 
-      {/* Footer */}
       <footer className="bg-[#9BB61B] text-white py-4 text-center text-sm">
         © {new Date().getFullYear()} BRASFI - Todos os direitos reservados.
       </footer>

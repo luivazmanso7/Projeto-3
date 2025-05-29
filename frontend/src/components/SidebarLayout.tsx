@@ -26,9 +26,8 @@ const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
             <Link
               key={path}
               href={path}
-              className={`px-4 py-2 rounded ${
-                pathname === path ? 'bg-[#9BB61B] text-black' : 'text-white'
-              }`}
+              className="px-4 py-2 rounded text-white hover:bg-[#9BB61B] hover:text-black transition-colors duration-200"
+
             >
               {name}
             </Link>

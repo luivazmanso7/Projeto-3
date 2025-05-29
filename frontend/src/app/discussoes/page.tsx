@@ -1,98 +1,214 @@
-// app/discussoes/page.tsx
 'use client';
-import SidebarLayout from '@/components/SidebarLayout';
 import { useEffect, useState } from 'react';
+import SidebarLayout from '@/components/SidebarLayout';
+
+type Comentario = {
+  id: number;
+  autor: string;
+  texto: string;
+};
 
 type Post = {
   id: number;
-  titulo: string;
   conteudo: string;
+  autor: string;
+  data: string;
+  curtidas: number;
+  comentarios: Comentario[];
 };
 
 export default function PaginaDiscussoes() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [titulo, setTitulo] = useState('');
   const [conteudo, setConteudo] = useState('');
-  const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [comentariosTexto, setComentariosTexto] = useState<{ [key: number]: string }>({});
+  const [usuarioAtual, setUsuarioAtual] = useState<string>('Você');
+  const [editandoPostId, setEditandoPostId] = useState<number | null>(null);
+  const [conteudoEditado, setConteudoEditado] = useState<string>('');
 
+  // Carregar posts ao iniciar
   useEffect(() => {
-    const salvos = localStorage.getItem('posts');
-    if (salvos) setPosts(JSON.parse(salvos));
+    const user = localStorage.getItem('usuarioAtual');
+    if (user) {
+      const { nome } = JSON.parse(user);
+      setUsuarioAtual(nome);
+      const chavePosts = `posts_${nome}`;
+      const salvos = localStorage.getItem(chavePosts);
+      if (salvos) setPosts(JSON.parse(salvos));
+    }
   }, []);
 
+  // Salvar posts sempre que forem atualizados
   useEffect(() => {
-    localStorage.setItem('posts', JSON.stringify(posts));
-  }, [posts]);
-
-  const criarOuEditarPost = () => {
-    if (!titulo || !conteudo) return;
-
-    if (editandoId !== null) {
-      setPosts(posts.map(p => p.id === editandoId ? { ...p, titulo, conteudo } : p));
-      setEditandoId(null);
-    } else {
-      setPosts([...posts, { id: Date.now(), titulo, conteudo }]);
+    if (usuarioAtual) {
+      const chavePosts = `posts_${usuarioAtual}`;
+      localStorage.setItem(chavePosts, JSON.stringify(posts));
     }
+  }, [posts, usuarioAtual]);
 
-    setTitulo('');
+  const criarPost = () => {
+    if (!conteudo.trim()) return;
+    const novoPost: Post = {
+      id: Date.now(),
+      conteudo,
+      autor: usuarioAtual,
+      data: new Date().toLocaleString(),
+      curtidas: 0,
+      comentarios: [],
+    };
+    setPosts([novoPost, ...posts]);
     setConteudo('');
   };
 
-  const deletarPost = (id: number) => {
-    setPosts(posts.filter(p => p.id !== id));
+  const curtirPost = (id: number) => {
+    setPosts(posts.map(post =>
+      post.id === id && post.autor !== usuarioAtual
+        ? { ...post, curtidas: post.curtidas + 1 }
+        : post
+    ));
   };
 
-  const editarPost = (post: Post) => {
-    setEditandoId(post.id);
-    setTitulo(post.titulo);
-    setConteudo(post.conteudo);
+  const comentarPost = (id: number) => {
+    const texto = comentariosTexto[id];
+    if (!texto.trim()) return;
+
+    setPosts(posts.map(post =>
+      post.id === id && post.autor !== usuarioAtual
+        ? {
+            ...post,
+            comentarios: [...post.comentarios, { id: Date.now(), autor: usuarioAtual, texto }],
+          }
+        : post
+    ));
+    setComentariosTexto({ ...comentariosTexto, [id]: '' });
+  };
+
+  const iniciarEdicao = (id: number, conteudoAtual: string) => {
+    setEditandoPostId(id);
+    setConteudoEditado(conteudoAtual);
+  };
+
+  const salvarEdicao = (id: number) => {
+    setPosts(posts.map(post =>
+      post.id === id ? { ...post, conteudo: conteudoEditado } : post
+    ));
+    setEditandoPostId(null);
+    setConteudoEditado('');
+  };
+
+  const excluirPost = (id: number) => {
+    setPosts(posts.filter(post => post.id !== id));
   };
 
   return (
     <SidebarLayout>
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Discussões</h1>
+      <div className="p-6 space-y-6 bg-[#FFFCE5] min-h-screen text-black">
+        <h1 className="text-2xl font-bold">Discussões</h1>
 
-        <div className="mb-6">
-          <input
-            type="text"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-            placeholder="Título"
-            className="w-full p-2 border rounded mb-2"
-          />
+        <div className="bg-white p-4 rounded shadow">
           <textarea
             value={conteudo}
             onChange={(e) => setConteudo(e.target.value)}
-            placeholder="Conteúdo"
-            className="w-full p-2 border rounded mb-2"
+            className="w-full p-2 border rounded"
+            placeholder="Escreva sua postagem..."
           />
           <button
-            onClick={criarOuEditarPost}
-            className="bg-[#281719] text-white px-4 py-2 rounded"
+            onClick={criarPost}
+            className="mt-2 bg-[#281719] text-white px-4 py-2 rounded hover:brightness-125"
           >
-            {editandoId ? 'Atualizar' : 'Criar'}
+            Postar
           </button>
         </div>
 
-        {posts.map((post) => (
-          <div key={post.id} className="bg-white p-4 rounded shadow mb-4">
-            <h2 className="text-xl font-bold">{post.titulo}</h2>
-            <p>{post.conteudo}</p>
-            <div className="flex gap-2 mt-2">
-              <button
-                onClick={() => editarPost(post)}
-                className="text-blue-600 underline"
-              >
-                Editar
-              </button>
-              <button
-                onClick={() => deletarPost(post.id)}
-                className="text-red-600 underline"
-              >
-                Excluir
-              </button>
-            </div>
+        {posts.map(post => (
+          <div key={post.id} className="bg-white p-4 rounded shadow">
+            <p className="text-sm text-gray-500 mb-1">
+              {post.autor} • {post.data}
+            </p>
+
+            {editandoPostId === post.id ? (
+              <>
+                <textarea
+                  value={conteudoEditado}
+                  onChange={(e) => setConteudoEditado(e.target.value)}
+                  className="w-full p-2 border rounded mb-2"
+                />
+                <button
+                  onClick={() => salvarEdicao(post.id)}
+                  className="mr-2 text-sm text-green-600 hover:underline"
+                >
+                  Salvar
+                </button>
+                <button
+                  onClick={() => setEditandoPostId(null)}
+                  className="text-sm text-gray-600 hover:underline"
+                >
+                  Cancelar
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="mb-2">{post.conteudo}</p>
+
+                <div className="flex items-center gap-4">
+                  <button
+                    disabled={post.autor === usuarioAtual}
+                    onClick={() => curtirPost(post.id)}
+                    className={`text-sm ${
+                      post.autor === usuarioAtual ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:underline'
+                    }`}
+                  >
+                    Curtir ({post.curtidas})
+                  </button>
+
+                  {post.autor === usuarioAtual && (
+                    <>
+                      <button
+                        onClick={() => iniciarEdicao(post.id, post.conteudo)}
+                        className="text-sm text-yellow-600 hover:underline"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => excluirPost(post.id)}
+                        className="text-sm text-red-600 hover:underline"
+                      >
+                        Excluir
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                <div className="flex-grow mt-2">
+                  <input
+                    type="text"
+                    value={comentariosTexto[post.id] || ''}
+                    onChange={(e) =>
+                      setComentariosTexto({ ...comentariosTexto, [post.id]: e.target.value })
+                    }
+                    placeholder="Comentar..."
+                    className="border rounded px-2 py-1 w-full"
+                    disabled={post.autor === usuarioAtual}
+                  />
+                  <button
+                    onClick={() => comentarPost(post.id)}
+                    disabled={post.autor === usuarioAtual}
+                    className="mt-1 text-sm text-green-600 hover:underline"
+                  >
+                    Comentar
+                  </button>
+                </div>
+              </>
+            )}
+
+            {post.comentarios.length > 0 && (
+              <div className="mt-2 space-y-1">
+                {post.comentarios.map(com => (
+                  <div key={com.id} className="text-sm border-t pt-1">
+                    <strong>{com.autor}:</strong> {com.texto}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>
