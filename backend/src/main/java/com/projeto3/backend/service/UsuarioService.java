@@ -3,6 +3,9 @@ package com.projeto3.backend.service;
 import com.projeto3.backend.model.Usuario;
 import com.projeto3.backend.model.Certificado;
 import com.projeto3.backend.repository.UsuarioRepository;
+
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +52,7 @@ public class UsuarioService {
     }
 
     //Admin padrão
+    @PostConstruct
     public void criarAdmin(){
         if (!usuarioRepository.existsByEmail("admin@admin.com")) {
         Usuario admin = new Usuario();
