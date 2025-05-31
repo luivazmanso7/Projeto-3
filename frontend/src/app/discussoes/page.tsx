@@ -164,21 +164,22 @@ export default function PaginaDiscussoes() {
                   </button>
 
                   {usuarioAtual?.nome === post.autor && (
-                    <>
                       <button
                         onClick={() => iniciarEdicao(post.id, post.conteudo)}
                         className="text-sm text-yellow-600 hover:underline"
                       >
                         Editar
                       </button>
+                  )}
+                  { (usuarioAtual?.nome === post.autor || usuarioAtual?.email === "admin@admin.com") && (
                       <button
                         onClick={() => excluirPost(post.id)}
                         className="text-sm text-red-600 hover:underline"
                       >
                         Excluir
                       </button>
-                    </>
-                  )}
+                  )}  
+                  
                 </div>
 
                 <div className="flex-grow mt-2">
