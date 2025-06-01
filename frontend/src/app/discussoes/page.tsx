@@ -15,6 +15,7 @@ type Post = {
   data: string;
   curtidas: number;
   comentarios: Comentario[];
+  curtidoPor: string[]
 };
 
 export default function PaginaDiscussoes() {
@@ -55,6 +56,7 @@ export default function PaginaDiscussoes() {
       data: new Date().toLocaleString(),
       curtidas: 0,
       comentarios: [],
+      curtidoPor: [],
     };
     setPosts([novoPost, ...posts]);
     setConteudo('');
@@ -63,8 +65,8 @@ export default function PaginaDiscussoes() {
   const curtirPost = (id: number) => {
     if (!usuarioAtual) return;
     setPosts(posts.map(post =>
-      post.id === id && post.autor !== usuarioAtual.nome
-        ? { ...post, curtidas: post.curtidas + 1 }
+      post.id === id && post.autor !== usuarioAtual.nome && !post.curtidoPor.includes(usuarioAtual.nome)
+        ? { ...post, curtidas: post.curtidas + 1,curtidoPor: [...post.curtidoPor, usuarioAtual.nome] }
         : post
     ));
   };
