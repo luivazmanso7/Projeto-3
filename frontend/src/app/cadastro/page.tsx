@@ -1,32 +1,38 @@
+// src/app/cadastro/page.tsx
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CadastroPage() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const router = useRouter();
 
   const handleCadastro = async () => {
+    const corpo = { nome, email, senha };
+
     try {
       const resposta = await fetch("http://localhost:8080/usuarios", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ nome, email, senha }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(corpo),
       });
 
       if (resposta.ok) {
         setMensagem("Usuário cadastrado com sucesso!");
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
       } else {
         const erro = await resposta.text();
         setMensagem("Erro ao cadastrar: " + erro);
       }
     } catch (erro) {
+      console.error("Erro de conexão com o backend:", erro);
       setMensagem("Erro de conexão com o backend");
-      console.error(erro);
     }
   };
 

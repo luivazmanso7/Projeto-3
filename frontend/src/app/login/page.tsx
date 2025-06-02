@@ -1,35 +1,54 @@
-'use client';
-import { useState } from 'react';
-import Image from 'next/image';
+// src/app/login/page.tsx
+"use client";
+
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
   const router = useRouter();
 
-  const handleEntrar = (e: React.FormEvent) => {
+  const handleEntrar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!nome || !email || !senha) {
+    if (!email || !senha) {
       setErro('Preencha todos os campos.');
       return;
     }
 
-    const novoUsuario = { nome, email, senha };
-    localStorage.setItem('usuarioAtual', JSON.stringify(novoUsuario));
+    const corpo = { email, senha };
 
-    router.push('/discussoes');
+    try {
+      const resposta = await fetch("http://localhost:8080/usuarios/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(corpo),
+      });
+
+      if (resposta.ok) {
+        const usuarioLogado = await resposta.json();
+        localStorage.setItem('usuarioAtual', JSON.stringify(usuarioLogado));
+        router.push('/discussoes');
+      } else if (resposta.status === 401) {
+        setErro('Senha incorreta');
+      } else if (resposta.status === 404) {
+        setErro('Usuário não encontrado');
+      } else {
+        const textoErro = await resposta.text();
+        setErro("Erro: " + textoErro);
+      }
+    } catch (erroFetch) {
+      console.error("Erro de conexão com o backend:", erroFetch);
+      setErro('Erro de conexão com o backend');
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFCE5] text-black">
       <header className="flex justify-between items-center p-6 bg-[#9BB61B]">
-        <div className="flex items-center">
-          <Image src="/brasfi-logo.jpg" alt="Logo da BRASFI" width={50} height={50} />
-        </div>
+        <div className="flex items-center"></div>
       </header>
 
       <main className="flex-grow flex flex-col items-center justify-center px-4">
@@ -39,18 +58,9 @@ export default function LoginPage() {
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-sm w-full"
         >
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2">Nome</label>
-            <input
-              type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2">Email</label>
+            <label className="block text-black text-sm font-bold mb-2">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -61,7 +71,9 @@ export default function LoginPage() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-black text-sm font-bold mb-2">Senha</label>
+            <label className="block text-black text-sm font-bold mb-2">
+              Senha
+            </label>
             <input
               type="password"
               value={senha}

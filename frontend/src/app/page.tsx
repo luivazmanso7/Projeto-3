@@ -1,3 +1,6 @@
+// src/app/page.tsx (ou wherever your Home component está localizado)
+"use client";
+
 import Image from "next/image";
 
 export default function Home() {
@@ -15,12 +18,20 @@ export default function Home() {
           <a href="#contato" className="hover:underline">Contato</a>
           <a href="#saiba-mais" className="hover:underline">Saiba Mais</a>
         </nav>
-        <a
-          href="/login"
-          className="bg-[#281719] text-white px-4 py-2 rounded hover:brightness-125 text-sm"
-        >
-          Entrar
-        </a>
+        <div className="flex gap-4">
+          <a
+            href="/login"
+            className="bg-[#281719] text-white px-4 py-2 rounded hover:brightness-125 text-sm"
+          >
+            Entrar
+          </a>
+          <a
+            href="/cadastro"
+            className="bg-[#281719] text-white px-4 py-2 rounded hover:brightness-125 text-sm"
+          >
+            Cadastre-se
+          </a>
+        </div>
       </header>
 
       {/* Hero */}
@@ -61,7 +72,9 @@ export default function Home() {
       <section id="contato" className="px-8 py-16">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Contato</h2>
-          <p className="text-lg mb-4">Entre em contato conosco pelo e-mail: <strong>contato@brasfi.org</strong></p>
+          <p className="text-lg mb-4">
+            Entre em contato conosco pelo e-mail: <strong>contato@brasfi.org</strong>
+          </p>
         </div>
       </section>
 
