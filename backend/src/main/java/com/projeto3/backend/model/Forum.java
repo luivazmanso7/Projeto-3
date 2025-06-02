@@ -10,6 +10,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import java.util.ArrayList;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "forums")
@@ -18,6 +20,8 @@ public class Forum {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idForum;
 
+    @NotNull
+    @Size(min = 3, max = 100)
     @Column(nullable = false)
     private String titulo;
 

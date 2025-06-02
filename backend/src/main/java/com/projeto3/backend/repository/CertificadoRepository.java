@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface CertificadoRepository extends JpaRepository<Certificado, Integer> {
 
-    List<Certificado> findByUsuarioNome(String nomeUsuario);
+    List<Certificado> findByUsuario_Nome(String nomeUsuario);
 
-    List<Certificado> findByCursoNomeCurso(String nomeCurso);
+    List<Certificado> findByCurso_NomeCurso(String nomeCurso);
 
-    List<Certificado> findByUsuarioNomeAndCursoNomeCurso(String nomeUsuario, String nomeCurso);
+    List<Certificado> findByUsuario_NomeAndCurso_NomeCurso(String nomeUsuario, String nomeCurso);
 }

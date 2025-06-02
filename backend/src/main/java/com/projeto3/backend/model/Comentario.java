@@ -2,6 +2,8 @@ package com.projeto3.backend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "comentarios")
@@ -11,6 +13,8 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idComentario;
 
+    @NotNull
+    @Size(min = 1, max = 500)
     @Column(nullable = false)
     private String texto;
 

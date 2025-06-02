@@ -9,13 +9,13 @@ import java.util.List;
 public interface CursoRepository extends JpaRepository<Curso, Long> {
 
     // Buscar curso pelo nome exato
-    Curso findByCursoNome(String cursoNome);
+    Curso findByNomeCurso(String nomeCurso);
 
     // Buscar cursos cujo nome contenha uma determinada string (ignorando maiúsculas/minúsculas)
-    List<Curso> findByCursoNomeContainingIgnoreCase(String termo);
+    List<Curso> findByNomeCursoContainingIgnoreCase(String termo);
 
     // Verificar se existe um curso com determinado nome
-    boolean existsByCursoNome(String cursoNome);
+    boolean existsByNomeCurso(String nomeCurso);
 
     // Buscar cursos por parte do conteúdo do campo "certificado"
     List<Curso> findByCertificadoContainingIgnoreCase(String descricaoCertificado);

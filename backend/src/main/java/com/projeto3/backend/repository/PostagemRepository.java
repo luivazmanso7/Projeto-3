@@ -9,10 +9,10 @@ import java.util.List;
 public interface PostagemRepository extends JpaRepository<Postagem, Long> {
 
     // Buscar todas as postagens de um fórum específico (pelo ID do fórum)
-    List<Postagem> findByForumId(Long forumId);
+    List<Postagem> findByForumIdForum(Long forumId);
 
     // Buscar todas as postagens de um autor específico (pelo ID do autor)
-    List<Postagem> findByAutorId(Long autorId);
+    List<Postagem> findByAutor_Id(Long autorId);
 
     // Buscar postagens feitas em uma data específica
     List<Postagem> findByDataPostagem(LocalDate data);
