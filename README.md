@@ -40,5 +40,7 @@ Caso seja a primeira vez utilizando esse framework, será necessário realizar u
 
 ## Conta de Usuário padrão:
 Usuário: Admin
+
 Email: admin@admin.com
+
 Senha: admin123
