@@ -34,7 +34,11 @@ Torna a área educacional mais abrangente e útil para diferentes tipos de usuá
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 
-## Configurando banco localmente
+## Utilizando o projeto
+Ao puxar o repositório com `git clone [Link]`, entre na pasta frontend utilizando `cd frontend` no terminal
+Caso seja a primeira vez utilizando esse framework, será necessário realizar um `npm install` e instalar o Node.js 18.18.0, 19.8.0 ou uma versão igual/maior que a  20.0.0
 
-
-## Contas de Usuário já disponíveis
+## Conta de Usuário padrão:
+Usuário: Admin
+Email: admin@admin.com
+Senha: admin123
