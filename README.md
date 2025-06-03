@@ -34,7 +34,19 @@ Torna a área educacional mais abrangente e útil para diferentes tipos de usuá
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 
-## Configurando banco localmente
+## Utilizando o projeto
+O projeto possui alguns cursos e uma conta admin pré-codificados pois trabalha com um banco de dados local com base na sua máquina como forma de demonstrar as funcionalidades do site individualmente
+Para utilizar o repositório é necessário usar:
 
+`git clone [Link]` 
+`cd frontend` 
 
-## Contas de Usuário já disponíveis
+no terminal
+Caso seja a primeira vez utilizando esse framework, será necessário realizar um `npm install` e instalar o Node.js 18.18.0, 19.8.0 ou uma versão igual/maior que a 20.0.0 para que seja possível testar o projeto no  http://localhost:3000  
+
+## Conta de Usuário padrão:
+Usuário: Admin
+
+Email: admin@admin.com
+
+Senha: admin123
