@@ -1,0 +1,14 @@
+
+# Ignorar arquivos do backend
+/target/
+/*.log
+/*.class
+
+# Ignorar arquivos do frontend
+/node_modules/
+/build/
+/*.env
+
+# Ignorar IDEs
+.idea/
+.vscode/
