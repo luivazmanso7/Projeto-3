@@ -67,8 +67,9 @@ export default function PaginaDenuncias() {
   useEffect(() => {
     if (usuarioAtual) {
       localStorage.setItem('denuncias_globais', JSON.stringify(denuncias));
+      localStorage.setItem('posts_globais', JSON.stringify(posts)); // Salva os posts também!
     }
-  }, [denuncias, usuarioAtual]);
+  }, [denuncias, posts, usuarioAtual]); // Adicionado 'posts' à dependência para salvar as alterações
 
   // ---
   // Função para Criar Denúncia
@@ -100,7 +101,6 @@ export default function PaginaDenuncias() {
     // Se todas as validações passaram, limpa qualquer erro anterior
     setErroConteudo('');
 
-    // * MODIFICAR APENAS ESSA LINHA
     const novaDenuncia: Denuncia = {
       id: Date.now(),
       postId: conteudoInput, // Salvando o ID do post denunciado (como string)
@@ -113,6 +113,17 @@ export default function PaginaDenuncias() {
     // Limpa o campo de input após a criação
     setConteudoInput('');
     alert('Denúncia enviada com sucesso!'); // Feedback ao usuário
+  };
+
+  // FUNÇAO EXCLUIR O POST
+  const excluirPost = (id: number) => {
+    // Pergunta de confirmação antes de excluir
+    if (window.confirm("Tem certeza que deseja excluir este post? Esta ação é irreversível.")) {
+      setPosts(prevPosts => prevPosts.filter(post => post.id !== id));
+      // Opcional: Se um post for excluído, você também pode querer remover as denúncias relacionadas a ele.
+      setDenuncias(prevDenuncias => prevDenuncias.filter(denuncia => Number(denuncia.postId) !== id));
+      alert('Post excluído com sucesso!');
+    }
   };
 
   // ---
@@ -131,9 +142,23 @@ export default function PaginaDenuncias() {
                 {denuncias.map((denuncia) => (
                   <div key={denuncia.id} className="bg-white p-4 rounded shadow">
                     <p><strong>ID do Post Denunciado:</strong> {denuncia.postId}</p>
-                    <p><strong>Conteúdo do Post:</strong> "{denuncia.conteudoPost}"</p> {/* NOVO: Exibindo o conteúdo do post */}
+                    <p><strong>Conteúdo do Post:</strong> "{denuncia.conteudoPost}"</p>
                     <p><strong>Autor da Denúncia:</strong> {denuncia.autor}</p>
                     <p><strong>Data da Denúncia:</strong> {denuncia.data}</p>
+                    {/* Botão para excluir o post denunciado */}
+                    <button
+                      onClick={() => excluirPost(Number(denuncia.postId))}
+                      className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                    >
+                      Excluir Post
+                    </button>
+                    {/* Opcional: Botão para "resolver" a denúncia sem excluir o post, apenas a denúncia */}
+                    <button
+                      onClick={() => setDenuncias(prev => prev.filter(d => d.id !== denuncia.id))}
+                      className="mt-2 ml-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    >
+                      Ignorar Denúncia
+                    </button>
                   </div>
                 ))}
               </div>
