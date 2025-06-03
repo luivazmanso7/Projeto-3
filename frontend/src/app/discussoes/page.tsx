@@ -10,7 +10,7 @@ type Comentario = {
 
 type Post = {
   id: number;
-  conteudo: string;
+  conteudo: string; // Conteúdo do post
   autor: string;
   data: string;
   curtidas: number;
@@ -66,7 +66,7 @@ export default function PaginaDiscussoes() {
     if (!usuarioAtual) return;
     setPosts(posts.map(post =>
       post.id === id && post.autor !== usuarioAtual.nome && !post.curtidoPor.includes(usuarioAtual.nome)
-        ? { ...post, curtidas: post.curtidas + 1,curtidoPor: [...post.curtidoPor, usuarioAtual.nome] }
+        ? { ...post, curtidas: post.curtidas + 1, curtidoPor: [...post.curtidoPor, usuarioAtual.nome] }
         : post
     ));
   };
@@ -74,13 +74,13 @@ export default function PaginaDiscussoes() {
   const comentarPost = (id: number) => {
     if (!usuarioAtual) return;
     const texto = comentariosTexto[id];
-    if (texto.length == 0) return;
+    if (!texto || texto.trim().length === 0) return; // Alterado para verificar se o texto está vazio ou só com espaços
 
     setPosts(posts.map(post =>
       post.id === id && post.autor !== usuarioAtual.nome
         ? {
             ...post,
-            comentarios: [...post.comentarios, { id: Date.now(), autor: usuarioAtual.nome, texto }],
+            comentarios: [...post.comentarios, { id: Date.now(), autor: usuarioAtual.nome, texto: texto.trim() }], // Trim para remover espaços extras
           }
         : post
     ));
@@ -101,7 +101,11 @@ export default function PaginaDiscussoes() {
   };
 
   const excluirPost = (id: number) => {
-    setPosts(posts.filter(post => post.id !== id));
+    // Adicionando confirmação para excluir post
+    if (window.confirm("Tem certeza que deseja excluir este post?")) {
+      setPosts(posts.filter(post => post.id !== id));
+      alert('Post excluído com sucesso!');
+    }
   };
 
   return (
@@ -166,54 +170,61 @@ export default function PaginaDiscussoes() {
                   </button>
 
                   {usuarioAtual?.nome === post.autor && (
-                      <button
-                        onClick={() => iniciarEdicao(post.id, post.conteudo)}
-                        className="text-sm text-yellow-600 hover:underline"
-                      >
-                        Editar
-                      </button>
+                    <button
+                      onClick={() => iniciarEdicao(post.id, post.conteudo)}
+                      className="text-sm text-yellow-600 hover:underline"
+                    >
+                      Editar
+                    </button>
                   )}
                   { (usuarioAtual?.nome === post.autor || usuarioAtual?.email === "admin@admin.com") && (
-                      <button
-                        onClick={() => excluirPost(post.id)}
-                        className="text-sm text-red-600 hover:underline"
-                      >
-                        Excluir
-                      </button>
-                  )}  
-                  
+                    <button
+                      onClick={() => excluirPost(post.id)}
+                      className="text-sm text-red-600 hover:underline"
+                    >
+                      Excluir
+                    </button>
+                  )} 
                 </div>
 
-                <div className="flex-grow mt-2">
-                  <input
-                    type="text"
-                    value={comentariosTexto[post.id] || ''}
-                    onChange={(e) =>
-                      setComentariosTexto({ ...comentariosTexto, [post.id]: e.target.value })
-                    }
-                    placeholder="Comentar..."
-                    className="border rounded px-2 py-1 w-full"
-                    disabled={usuarioAtual?.nome === post.autor}
-                  />
-                  <button
-                    onClick={() => comentarPost(post.id)}
-                    disabled={usuarioAtual?.nome === post.autor}
-                    className="mt-1 text-sm text-green-600 hover:underline"
-                  >
-                    Comentar
-                  </button>
-                </div>
-              </>
-            )}
-
-            {post.comentarios.length > 0 && (
-              <div className="mt-2 space-y-1">
-                {post.comentarios.map(com => (
-                  <div key={com.id} className="text-sm border-t pt-1">
-                    <strong>{com.autor}:</strong> {com.texto}
+                {/* INÍCIO DA SEÇÃO DE COMENTÁRIOS ESTILIZADA */}
+                <div className="flex-grow mt-4"> {/* Aumentei mt-2 para mt-4 para mais espaçamento */}
+                  <div className="flex items-center space-x-2"> {/* Container para input e botão */}
+                    <input
+                      type="text"
+                      value={comentariosTexto[post.id] || ''}
+                      onChange={(e) =>
+                        setComentariosTexto({ ...comentariosTexto, [post.id]: e.target.value })
+                      }
+                      placeholder="Comentar..."
+                      className="flex-grow border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8B4513] focus:border-transparent transition duration-200 ease-in-out"
+                      disabled={usuarioAtual?.nome === post.autor}
+                    />
+                    <button
+                      onClick={() => comentarPost(post.id)}
+                      disabled={usuarioAtual?.nome === post.autor}
+                      className="bg-[#281719] text-white px-4 py-2 rounded-full text-sm font-semibold hover:brightness-125 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 ease-in-out"
+                    >
+                      Comentar
+                    </button>
                   </div>
-                ))}
-              </div>
+                </div>
+
+                {post.comentarios.length > 0 && (
+                  <div className="mt-4 space-y-3 p-3 bg-gray-50 rounded-lg border border-gray-200"> {/* Contêiner de todos os comentários */}
+                    <h4 className="text-md font-semibold text-gray-700 mb-2">Comentários:</h4>
+                    {post.comentarios.map(com => (
+                      <div key={com.id} className="text-sm p-2 rounded-md bg-white border border-gray-100 shadow-sm"> {/* Estilo para cada comentário individual */}
+                        <p className="font-medium text-gray-900">
+                          <strong>{com.autor}:</strong>
+                        </p>
+                        <p className="text-gray-800 break-words">{com.texto}</p> {/* break-words para quebrar texto longo */}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {/* FIM DA SEÇÃO DE COMENTÁRIOS ESTILIZADA */}
+              </>
             )}
           </div>
         ))}
