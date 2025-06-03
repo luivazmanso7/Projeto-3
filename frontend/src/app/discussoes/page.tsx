@@ -127,7 +127,7 @@ export default function PaginaDiscussoes() {
         {posts.map(post => (
           <div key={post.id} className="bg-white p-4 rounded shadow">
             <p className="text-sm text-gray-500 mb-1">
-              {post.autor} • {post.data}
+              {post.autor} • {post.data} • ID do post:{post.id}
             </p>
 
             {editandoPostId === post.id ? (
