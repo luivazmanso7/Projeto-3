@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import SidebarLayout from '@/components/SidebarLayout';
-
+//import SidebarLayout from '@/components/SidebarLayout';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 type Comentario = {
   id: number;
   autor: string;
@@ -109,7 +109,7 @@ export default function PaginaDiscussoes() {
   };
 
   return (
-    <SidebarLayout>
+    
       <div className="p-6 space-y-6 bg-[#FFFCE5] min-h-screen text-black">
         <h1 className="text-2xl font-bold">Discussões</h1>
 
@@ -229,6 +229,6 @@ export default function PaginaDiscussoes() {
           </div>
         ))}
       </div>
-    </SidebarLayout>
+    
   );
 }
