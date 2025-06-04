@@ -38,6 +38,26 @@ const CommentIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// Ícone simples de lixeira para excluir comentários
+const TrashIcon = ({ className }: { className?: string }) => (
+  <svg 
+    className={className}
+    xmlns="http://www.w3.org/2000/svg" 
+    width="16" 
+    height="16" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6"></polyline>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+      <line x1="10" y1="11" x2="10" y2="17"></line>
+      <line x1="14" y1="11" x2="14" y2="17"></line>
+  </svg>
+);
+
 
 type Comentario = {
   id: number;
@@ -100,13 +120,17 @@ export default function PaginaDiscussoes() {
   const curtirPost = (id: number) => {
     if (!usuarioAtual) return;
     setPosts(posts.map(post => {
-      if (post.id === id && post.autor !== usuarioAtual.nome) {
+      if (post.id === id && post.autor !== usuarioAtual.nome) { // Não pode curtir o próprio post
         const jaCurtiu = post.curtidoPor.includes(usuarioAtual.nome);
         if (jaCurtiu) {
-          // Descurtir (opcional, se quiser implementar)
-          // return { ...post, curtidas: post.curtidas - 1, curtidoPor: post.curtidoPor.filter(nome => nome !== usuarioAtual.nome) };
-          return post; // Por enquanto, não permite descurtir com um clique
+          // Descurtir
+          return { 
+            ...post, 
+            curtidas: post.curtidas - 1, 
+            curtidoPor: post.curtidoPor.filter(nome => nome !== usuarioAtual.nome) 
+          };
         } else {
+          // Curtir
           return { ...post, curtidas: post.curtidas + 1, curtidoPor: [...post.curtidoPor, usuarioAtual.nome] };
         }
       }
@@ -119,7 +143,7 @@ export default function PaginaDiscussoes() {
     const texto = comentariosTexto[id];
     if (!texto || texto.trim().length === 0) return;
     setPosts(posts.map(post =>
-      post.id === id && post.autor !== usuarioAtual.nome
+      post.id === id && post.autor !== usuarioAtual.nome // Não pode comentar no próprio post (regra mantida do código original)
         ? {
             ...post,
             comentarios: [...post.comentarios, { id: Date.now(), autor: usuarioAtual.nome, texto: texto.trim() }],
@@ -128,6 +152,35 @@ export default function PaginaDiscussoes() {
     ));
     setComentariosTexto({ ...comentariosTexto, [id]: '' });
   };
+
+  const excluirComentario = (postId: number, comentarioId: number) => {
+    if (!usuarioAtual) return;
+
+    // Encontra o post e o comentário para verificar a autoria antes de pedir confirmação
+    const postParaAtualizar = posts.find(p => p.id === postId);
+    if (!postParaAtualizar) return;
+    const comentarioParaExcluir = postParaAtualizar.comentarios.find(c => c.id === comentarioId);
+    if (!comentarioParaExcluir) return;
+
+    // Permite exclusão se for o autor do comentário OU se for admin
+    if (comentarioParaExcluir.autor === usuarioAtual.nome || usuarioAtual.email === 'admin@admin.com') {
+        if (window.confirm("Tem certeza que deseja excluir este comentário?")) {
+            setPosts(posts.map(post => {
+                if (post.id === postId) {
+                return {
+                    ...post,
+                    comentarios: post.comentarios.filter(com => com.id !== comentarioId)
+                };
+                }
+                return post;
+            }));
+            alert('Comentário excluído com sucesso!');
+        }
+    } else {
+        alert('Você não tem permissão para excluir este comentário.');
+    }
+  };
+
 
   const iniciarEdicao = (id: number, conteudoAtual: string) => {
     setEditandoPostId(id);
@@ -187,7 +240,6 @@ export default function PaginaDiscussoes() {
                 <div>
                   <p className="font-semibold text-gray-800">{post.autor}</p>
                   <p className="text-xs text-gray-500">{post.data}</p>
-                  <p className="text-xs text-gray-500">ID do post:{post.id}</p>
                 </div>
               </div>
               {(usuarioAtual?.nome === post.autor || usuarioAtual?.email === "admin@admin.com") && (
@@ -253,7 +305,7 @@ export default function PaginaDiscussoes() {
                 <div className="flex items-center space-x-4 border-t border-gray-200 pt-4">
                     <button
                         onClick={() => curtirPost(post.id)}
-                        disabled={usuarioAtual?.nome === post.autor}
+                        disabled={!usuarioAtual || usuarioAtual?.nome === post.autor} // Desabilitar se não logado ou se for o próprio post
                         className={`p-1.5 rounded-full transition-colors duration-150 ease-in-out 
                                     disabled:text-gray-300 disabled:cursor-not-allowed
                                     ${post.curtidoPor.includes(usuarioAtual?.nome || '') 
@@ -264,21 +316,20 @@ export default function PaginaDiscussoes() {
                     >
                         <HeartIcon 
                             filled={post.curtidoPor.includes(usuarioAtual?.nome || '')} 
-                            className="w-5 h-5" // Ajuste o tamanho conforme necessário
+                            className="w-5 h-5"
                         />
                     </button>
-                     {/* Exibindo a contagem de curtidas ao lado do botão, mas não dentro dele */}
-                    <span className="text-sm text-gray-600">{post.curtidas > 0 ? post.curtidas : ''}</span>
+                    <span className="text-sm text-gray-600">{post.curtidas > 0 ? post.curtidas : '0'}</span>
 
                     <button
                         className="p-1.5 rounded-full text-gray-500 hover:text-[#9BB61B] hover:bg-gray-100 transition-colors duration-150 ease-in-out"
                         title="Comentar"
                         onClick={() => document.getElementById(`comment-input-${post.id}`)?.focus()}
+                        disabled={!usuarioAtual} // Desabilitar se não logado
                     >
-                        <CommentIcon className="w-5 h-5" /> {/* Ajuste o tamanho */}
+                        <CommentIcon className="w-5 h-5" />
                     </button>
-                    {/* Exibindo a contagem de comentários ao lado do botão */}
-                    <span className="text-sm text-gray-600">{post.comentarios.length > 0 ? post.comentarios.length : ''}</span>
+                    <span className="text-sm text-gray-600">{post.comentarios.length > 0 ? post.comentarios.length : '0'}</span>
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-gray-200">
@@ -292,7 +343,7 @@ export default function PaginaDiscussoes() {
                         }
                         placeholder="Adicione um comentário..."
                         className="flex-grow border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#9BB61B] focus:border-transparent transition duration-200 ease-in-out"
-                        disabled={usuarioAtual?.nome === post.autor || !usuarioAtual}
+                        disabled={!usuarioAtual || usuarioAtual?.nome === post.autor } // Desabilitar se não logado ou se for o próprio post
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
@@ -302,7 +353,7 @@ export default function PaginaDiscussoes() {
                     />
                     <button
                         onClick={() => comentarPost(post.id)}
-                        disabled={usuarioAtual?.nome === post.autor || !comentariosTexto[post.id]?.trim() || !usuarioAtual}
+                        disabled={!usuarioAtual || usuarioAtual?.nome === post.autor || !comentariosTexto[post.id]?.trim()}
                         className="bg-[#281719] text-white px-5 py-2 rounded-full text-sm font-semibold hover:brightness-125 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 ease-in-out"
                     >
                         Enviar
@@ -312,11 +363,23 @@ export default function PaginaDiscussoes() {
                     {post.comentarios.length > 0 && (
                     <div className="space-y-3">
                         {post.comentarios.map(com => (
-                        <div key={com.id} className="p-3 rounded-md bg-gray-50 border border-gray-100 shadow-sm">
-                            <p className="text-sm">
-                            <strong className="text-gray-800">{com.autor}:</strong>
-                            <span className="text-gray-700 ml-1 break-words">{com.texto}</span>
-                            </p>
+                        <div key={com.id} className="p-3 rounded-md bg-gray-50 border border-gray-100 shadow-sm flex justify-between items-start">
+                            <div>
+                                <p className="text-sm">
+                                <strong className="text-gray-800">{com.autor}:</strong>
+                                <span className="text-gray-700 ml-1 break-words">{com.texto}</span>
+                                </p>
+                            </div>
+                            {/* Botão de excluir comentário */}
+                            {(usuarioAtual?.nome === com.autor || usuarioAtual?.email === 'admin@admin.com') && (
+                                <button
+                                    onClick={() => excluirComentario(post.id, com.id)}
+                                    className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors text-xs"
+                                    title="Excluir comentário"
+                                >
+                                    <TrashIcon className="w-4 h-4" />
+                                </button>
+                            )}
                         </div>
                         ))}
                     </div>
