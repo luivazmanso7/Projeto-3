@@ -20,24 +20,6 @@ public class UsuarioService {
     }
 
     public Usuario salvar(Usuario usuario) {
-        // Validações adicionais antes de salvar
-        if (usuario.getNome() == null || usuario.getNome().trim().length() < 3) {
-            throw new IllegalArgumentException("O nome deve ter pelo menos 3 caracteres.");
-        }
-        
-        if (usuario.getEmail() == null || usuario.getEmail().trim().length() < 5) {
-            throw new IllegalArgumentException("O email deve ter pelo menos 5 caracteres.");
-        }
-        
-        if (usuario.getSenha() == null || usuario.getSenha().length() < 6) {
-            throw new IllegalArgumentException("A senha deve ter pelo menos 6 caracteres.");
-        }
-        
-        // Verifica se o email já existe
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new IllegalArgumentException("Este email já está cadastrado no sistema.");
-        }
-        
         return usuarioRepository.save(usuario);
     }
 
@@ -73,13 +55,12 @@ public class UsuarioService {
     @PostConstruct
     public void criarAdmin(){
         if (!usuarioRepository.existsByEmail("admin@admin.com")) {
-            Usuario admin = new Usuario();
-            admin.setNome("Admin");
-            admin.setEmail("admin@admin.com");
-            admin.setSenha("admin123"); 
-            admin.setAdministrador(true);
-            // Usa save direto para não passar pelas validações de negócio
-            usuarioRepository.save(admin);
-        }
+        Usuario admin = new Usuario();
+        admin.setNome("Admin");
+        admin.setEmail("admin@admin.com");
+        admin.setSenha("admin123"); 
+        admin.setAdministrador(true);
+        usuarioRepository.save(admin);
+    }
     }
 }

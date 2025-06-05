@@ -31,7 +31,7 @@ public class CertificadoService {
     }
 
     public List<Certificado> buscarPorCurso(String nomeCurso) {
-        return certificadoRepository.findByCurso_Titulo(nomeCurso);
+        return certificadoRepository.findByCurso_NomeCurso(nomeCurso);
     }
 
     public void excluirCertificado(Integer id) {

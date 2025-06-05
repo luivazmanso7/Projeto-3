@@ -12,7 +12,6 @@ import jakarta.persistence.CascadeType;
 import java.util.ArrayList;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "forums")
@@ -27,7 +26,6 @@ public class Forum {
     private String titulo;
 
     @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private List<Postagem> postagens = new ArrayList<>();
 
     // getters/setters

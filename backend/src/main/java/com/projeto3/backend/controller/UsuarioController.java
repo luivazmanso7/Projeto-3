@@ -35,41 +35,8 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody Usuario usuario) {
-        System.out.println("=== RECEBENDO REQUISIÇÃO DE CADASTRO ===");
-        System.out.println("Nome: " + (usuario != null ? usuario.getNome() : "null"));
-        System.out.println("Email: " + (usuario != null ? usuario.getEmail() : "null"));
-        System.out.println("Senha: " + (usuario != null && usuario.getSenha() != null ? "***" + usuario.getSenha().length() + " chars***" : "null"));
-        System.out.println("Administrador: " + (usuario != null ? usuario.isAdministrador() : "null"));
-        
-        try {
-            Usuario usuarioSalvo = usuarioService.salvar(usuario);
-            System.out.println("Usuário salvo com sucesso: ID " + usuarioSalvo.getId());
-            return ResponseEntity.ok(usuarioSalvo);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro de validação de regras de negócio: " + e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (jakarta.validation.ConstraintViolationException e) {
-            System.out.println("Erro de validação de constraints: " + e.getMessage());
-            StringBuilder mensagemErro = new StringBuilder("Erro de validação: ");
-            e.getConstraintViolations().forEach(violation -> 
-                mensagemErro.append(violation.getPropertyPath())
-                           .append(" - ")
-                           .append(violation.getMessage())
-                           .append("; ")
-            );
-            return ResponseEntity.badRequest().body(mensagemErro.toString());
-        } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            System.out.println("Erro de integridade de dados: " + e.getMessage());
-            if (e.getMessage().contains("email")) {
-                return ResponseEntity.badRequest().body("Este email já está cadastrado no sistema.");
-            }
-            return ResponseEntity.badRequest().body("Erro de integridade de dados: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erro geral: " + e.getClass().getSimpleName() + " - " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Erro ao cadastrar usuário: " + e.getMessage());
-        }
+    public Usuario salvar(@RequestBody Usuario usuario) {
+        return usuarioService.salvar(usuario);
     }
 
     @PostMapping("/{idUsuario}/certificados")

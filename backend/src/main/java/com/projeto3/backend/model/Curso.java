@@ -13,9 +13,6 @@ import jakarta.persistence.JoinColumn;
 import java.util.ArrayList;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "cursos")
@@ -26,35 +23,12 @@ public class Curso {
 
     @NotNull
     @Size(min = 3, max = 100)
-    @Column(name = "titulo", nullable = false)
-    private String titulo;
+    @Column(name = "nome_curso", nullable = false)
+    private String nomeCurso;
 
-    @Column(name = "capa_curso")
-    private String capaCurso; // Caminho do arquivo da capa
+    @Column(nullable = false)
+    private String certificado;
 
-    @Column(name = "descricao_conteudo", columnDefinition = "TEXT")
-    private String descricaoConteudo;
-
-    @Column(name = "descricao_curta")
-    private String descricaoCurta;
-
-    @Column(name = "categoria", nullable = false)
-    private String categoria; // BASICO ou AO VIVO
-
-    @Column(name = "docente")
-    private String docente;
-
-    @Column(name = "material_apoio")
-    private String materialApoio; // Caminho do arquivo de material de apoio
-
-    @Column(name = "tags")
-    private String tags; // Pode ser uma string separada por vírgula
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "date_inicio")
-    private LocalDate dataInicio;
-
-    @JsonIgnore
     @ManyToMany
     @JoinTable(
       name = "curso_usuario",
@@ -62,20 +36,6 @@ public class Curso {
       inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private List<Usuario> usuarios = new ArrayList<>();
-
-    // Construtores
-    public Curso() {}
-
-    public Curso(String titulo, String descricaoConteudo, String descricaoCurta, 
-                String categoria, String docente, String tags, LocalDate dataInicio) {
-        this.titulo = titulo;
-        this.descricaoConteudo = descricaoConteudo;
-        this.descricaoCurta = descricaoCurta;
-        this.categoria = categoria;
-        this.docente = docente;
-        this.tags = tags;
-        this.dataInicio = dataInicio;
-    }
 
     // Emite (gera) um certificado para um usuário
     public void emitirCertificado(Usuario usuario, Certificado cert) {
@@ -87,34 +47,12 @@ public class Curso {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getNomeCurso() { return nomeCurso; }
+    public void setNomeCurso(String nomeCurso) { this.nomeCurso = nomeCurso; }
 
-    public String getCapaCurso() { return capaCurso; }
-    public void setCapaCurso(String capaCurso) { this.capaCurso = capaCurso; }
+    public String getCertificado() { return certificado; }
+    public void setCertificado(String certificado) { this.certificado = certificado; }
 
-    public String getDescricaoConteudo() { return descricaoConteudo; }
-    public void setDescricaoConteudo(String descricaoConteudo) { this.descricaoConteudo = descricaoConteudo; }
-
-    public String getDescricaoCurta() { return descricaoCurta; }
-    public void setDescricaoCurta(String descricaoCurta) { this.descricaoCurta = descricaoCurta; }
-
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
-
-    public String getDocente() { return docente; }
-    public void setDocente(String docente) { this.docente = docente; }
-
-    public String getMaterialApoio() { return materialApoio; }
-    public void setMaterialApoio(String materialApoio) { this.materialApoio = materialApoio; }
-
-    public String getTags() { return tags; }
-    public void setTags(String tags) { this.tags = tags; }
-
-    public LocalDate getDataInicio() { return dataInicio; }
-    public void setDataInicio(LocalDate dataInicio) { this.dataInicio = dataInicio; }
-
-    @JsonIgnore
     public List<Usuario> getUsuarios() { return usuarios; }
     public void setUsuarios(List<Usuario> usuarios) { this.usuarios = usuarios; }
 }

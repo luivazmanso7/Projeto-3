@@ -1,11 +1,8 @@
 package com.projeto3.backend.controller;
 
-import com.projeto3.backend.dto.PostagemDTO;
 import com.projeto3.backend.model.Postagem;
 import com.projeto3.backend.service.PostagemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,29 +27,13 @@ public class PostagemController {
     }
 
     @PostMapping
-    public ResponseEntity<Postagem> criarPostagem(@RequestBody Postagem postagem) {
-        try {
-            Postagem novaPostagem = postagemService.salvarPostagem(postagem);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novaPostagem);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
-
-    @PostMapping("/nova")
-    public ResponseEntity<Postagem> criarNovaPostagem(@RequestBody PostagemDTO postagemDTO) {
-        try {
-            Postagem novaPostagem = postagemService.criarPostagem(postagemDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novaPostagem);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+    public Postagem criarPostagem(@RequestBody Postagem postagem) {
+        return postagemService.salvarPostagem(postagem);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarPostagem(@PathVariable Long id) {
+    public void deletarPostagem(@PathVariable Long id) {
         postagemService.deletarPostagem(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/{id}/curtir")

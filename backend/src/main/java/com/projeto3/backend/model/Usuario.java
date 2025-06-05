@@ -1,7 +1,6 @@
 package com.projeto3.backend.model;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.validation.constraints.NotNull;
@@ -32,7 +31,6 @@ public class Usuario {
     @Column(nullable = false)
     private boolean administrador;
 
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "usuario_id")
     private List<Certificado> certificados = new ArrayList<>();
@@ -79,7 +77,6 @@ public class Usuario {
         this.administrador = administrador;
     }
 
-    @JsonIgnore
     public List<Certificado> getCertificados() {
         return certificados;
     }
@@ -103,21 +100,21 @@ public class Usuario {
     }
 
     public void publicarCurso(Curso curso) {
-        System.out.printf("Usuário %d publicou o curso %s%n", this.id, curso.getTitulo());
+        System.out.printf("Usuário %d publicou o curso %s%n", this.id, curso.getNomeCurso());
     }
 
     public void editarCurso(Curso curso) {
         if (!administrador) {
             throw new SecurityException("Apenas administrador pode editar curso.");
         }
-        System.out.printf("Administrador %d editou o curso %s%n", this.id, curso.getTitulo());
+        System.out.printf("Administrador %d editou o curso %s%n", this.id, curso.getNomeCurso());
     }
 
     public void excluirCurso(Curso curso) {
         if (!administrador) {
             throw new SecurityException("Apenas administrador pode excluir curso.");
         }
-        System.out.printf("Administrador %d excluiu o curso %s%n", this.id, curso.getTitulo());
+        System.out.printf("Administrador %d excluiu o curso %s%n", this.id, curso.getNomeCurso());
     }
 
     public void excluirForum(Forum forum) {

@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "postagens")
@@ -15,13 +14,8 @@ public class Postagem {
     private int idPost;
 
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 500)
     @Column(nullable = false)
-    private String titulo;
-
-    @NotNull
-    @Size(min = 1, max = 5000)
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String conteudo;
 
     @Column(name = "data_postagem", nullable = false)
@@ -36,7 +30,6 @@ public class Postagem {
     private Usuario autor;
 
     @OneToMany(mappedBy = "postagem", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private List<Comentario> comentarios;
 
     @Column(name = "curtidas", nullable = false)
@@ -45,9 +38,6 @@ public class Postagem {
     // Getters e Setters
     public int getIdPost() { return idPost; }
     public void setIdPost(int idPost) { this.idPost = idPost; }
-
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
 
     public String getConteudo() { return conteudo; }
     public void setConteudo(String conteudo) { this.conteudo = conteudo; }
