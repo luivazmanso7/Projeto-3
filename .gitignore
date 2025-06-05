@@ -1,8 +1,10 @@
 
 # Ignorar arquivos do backend
-/target/
-/*.log
-/*.class
+backend/target/
+backend/*.log
+backend/*.class
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/.DS_Store
 
 # Ignorar arquivos do frontend
 /node_modules/
