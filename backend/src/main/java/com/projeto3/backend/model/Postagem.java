@@ -3,6 +3,8 @@ package com.projeto3.backend.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "postagens")
@@ -11,6 +13,8 @@ public class Postagem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idPost;
 
+    @NotNull
+    @Size(min = 1, max = 500)
     @Column(nullable = false)
     private String conteudo;
 
@@ -21,6 +25,10 @@ public class Postagem {
     @JoinColumn(name = "forum_id", nullable = false)
     private Forum forum;
 
+    @ManyToOne
+    @JoinColumn(name = "autor_id", nullable = false)
+    private Usuario autor;
+
     @OneToMany(mappedBy = "postagem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios;
 
@@ -28,8 +36,6 @@ public class Postagem {
     private int curtidas = 0;
 
     // Getters e Setters
-    // (Inclua também os novos campos)
-
     public int getIdPost() { return idPost; }
     public void setIdPost(int idPost) { this.idPost = idPost; }
 
@@ -41,6 +47,9 @@ public class Postagem {
 
     public Forum getForum() { return forum; }
     public void setForum(Forum forum) { this.forum = forum; }
+
+    public Usuario getAutor() { return autor; }
+    public void setAutor(Usuario autor) { this.autor = autor; }
 
     public List<Comentario> getComentarios() { return comentarios; }
     public void setComentarios(List<Comentario> comentarios) { this.comentarios = comentarios; }

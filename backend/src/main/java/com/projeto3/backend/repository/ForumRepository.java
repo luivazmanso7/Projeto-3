@@ -7,9 +7,6 @@ import java.util.List;
 
 public interface ForumRepository extends JpaRepository<Forum, Long> {
 
-    // Buscar todos os fóruns criados por um usuário específico (pelo ID do autor)
-    List<Forum> findByAutorId(Long autorId);
-
     // Buscar fórum pelo título exato
     Forum findByTitulo(String titulo);
 

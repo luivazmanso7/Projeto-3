@@ -40,4 +40,17 @@ public class CursoController {
     public void excluirCurso(@PathVariable Long id) {
         cursoService.excluirCurso(id);
     }
+
+    @GetMapping("/teste")
+    public List<Curso> listarCursosTeste() {
+        Curso curso1 = new Curso();
+        curso1.setId(1);
+        curso1.setNomeCurso("Java Básico");
+        
+        Curso curso2 = new Curso();
+        curso2.setId(2);
+        curso2.setNomeCurso("Spring Boot");
+        
+        return List.of(curso1, curso2);
+    }
 }

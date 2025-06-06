@@ -27,7 +27,7 @@ public class CursoService {
     }
 
     public List<Curso> buscarPorNome(String nome) {
-        return cursoRepository.findByCursoNomeContainingIgnoreCase(nome);
+        return cursoRepository.findByNomeCursoContainingIgnoreCase(nome);
     }
 
     public void excluirCurso(Long id) {

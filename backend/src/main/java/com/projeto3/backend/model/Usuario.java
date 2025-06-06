@@ -3,6 +3,8 @@ package com.projeto3.backend.model;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "usuarios")
@@ -11,14 +13,20 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
+    @Size(min = 3, max = 100)
     @Column(nullable = false)
     private String nome;
 
+    @NotNull
+    @Size(min = 5, max = 100)
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotNull
+    @Size(min = 6, max = 100)
     @Column(nullable = false)
-    private String senha; // <-- Adicionado
+    private String senha;
 
     @Column(nullable = false)
     private boolean administrador;
