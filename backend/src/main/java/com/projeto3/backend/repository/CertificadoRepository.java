@@ -11,4 +11,6 @@ public interface CertificadoRepository extends JpaRepository<Certificado, Intege
     List<Certificado> findByCurso_Titulo(String titulo);
 
     List<Certificado> findByUsuario_NomeAndCurso_Titulo(String nomeUsuario, String titulo);
+
+    List<Certificado> findByUsuario_Id(int usuarioId);
 }

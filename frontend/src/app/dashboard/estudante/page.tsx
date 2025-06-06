@@ -157,6 +157,16 @@ export default function DashboardEstudantePage() {
     );
   };
 
+  // Função para concluir curso e redirecionar
+  async function concluirCurso(cursoId: number, usuarioId: number) {
+    await fetch("http://localhost:8080/certificados", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ usuarioId, cursoId }),
+    });
+    window.location.href = "/dashboard/cursos";
+  }
+
   if (carregando) {
     return (
       <p className="text-gray-600 text-center mt-8">Carregando cursos...</p>
@@ -168,7 +178,7 @@ export default function DashboardEstudantePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4">
-      {/* Seção “O QUE APRENDER EM SEGUIDA” */}
+      {/* Seção "O QUE APRENDER EM SEGUIDA" */}
       <section className="mb-10">
         <h2 className="text-2xl font-bold text-[#281719] mb-1 mt-2">
           O QUE APRENDER EM SEGUIDA
@@ -190,7 +200,7 @@ export default function DashboardEstudantePage() {
         </div>
       </section>
 
-      {/* Seção “MEUS APRENDIZADOS” */}
+      {/* Seção "MEUS APRENDIZADOS" */}
       <section>
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl font-bold text-[#281719]">MEUS APRENDIZADOS</h2>
@@ -329,12 +339,18 @@ export default function DashboardEstudantePage() {
             </div>
 
             {/* Rodapé da modal */}
-            <div className="flex justify-end px-6 py-4 border-t">
+            <div className="flex justify-end gap-2 px-6 py-4 border-t">
               <button
                 onClick={fecharModal}
                 className="bg-[#281719] text-white px-4 py-2 rounded hover:brightness-110 transition"
               >
                 Fechar
+              </button>
+              <button
+                onClick={() => concluirCurso(cursoSelecionado.id!, 1)}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:brightness-110 transition font-bold"
+              >
+                Concluir Curso
               </button>
             </div>
           </div>

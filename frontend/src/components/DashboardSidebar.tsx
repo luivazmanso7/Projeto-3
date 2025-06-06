@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { FaTachometerAlt, FaBook, FaFolderOpen, FaComments, FaProjectDiagram, FaCog, FaSignOutAlt, FaPen } from 'react-icons/fa';
+import { FaTachometerAlt, FaBook, FaFolderOpen, FaProjectDiagram, FaCog, FaSignOutAlt, FaPen } from 'react-icons/fa';
 
 export default function DashboardSidebar() {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -30,11 +30,8 @@ export default function DashboardSidebar() {
                 <Link href="/dashboard/recursos" className="flex items-center gap-3 py-3 px-5 rounded-lg hover:bg-[#9BB61B] font-semibold transition">
                     <FaFolderOpen /> Recursos
                 </Link>
-                <Link href="/dashboard/discussoes" className="flex items-center gap-3 py-3 px-5 rounded-lg hover:bg-[#9BB61B] font-semibold transition">
-                    <FaComments /> Discussões
-                </Link>
                 <Link href="/dashboard/postagens" className="flex items-center gap-3 py-3 px-5 rounded-lg hover:bg-[#9BB61B] font-semibold transition">
-                    <FaPen /> Postagens
+                    <FaPen /> Discussões
                 </Link>
                 {isAdmin && (
                     <>
