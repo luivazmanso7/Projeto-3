@@ -1,15 +1,19 @@
+// src/app/estudante/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";    // <<< IMPORTAR AQUI
 import { cursoService, Curso } from "@/services/cursoService";
+import { FaTimes } from "react-icons/fa";
 
 export default function DashboardEstudantePage() {
-  const router = useRouter();                   // <<< USAR O USE ROUTER
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [cursosAcessados, setCursosAcessados] = useState<number[]>([]);
+
+  // Modal state
+  const [modalAberta, setModalAberta] = useState(false);
+  const [cursoSelecionado, setCursoSelecionado] = useState<Curso | null>(null);
 
   useEffect(() => {
     cursoService
@@ -34,36 +38,31 @@ export default function DashboardEstudantePage() {
     }
   }, []);
 
-  const handleAcessarCurso = (cursoId: number) => {
-    // 1) se já estiver acessado, só redireciona
-    if (cursosAcessados.includes(cursoId)) {
-      router.push("/cursos");        // <<< IR PARA PaginaCursos
-      return;
+  // Ao clicar em "Acessar Curso" ou "Já Acessado", abre a modal
+  const handleAbrirModal = (curso: Curso) => {
+    if (!cursosAcessados.includes(curso.id!)) {
+      const novaLista = [...cursosAcessados, curso.id!];
+      setCursosAcessados(novaLista);
+      localStorage.setItem("cursosAcessados", JSON.stringify(novaLista));
     }
-
-    // 2) adiciona ao array de acessados e persisti
-    const novaLista = [...cursosAcessados, cursoId];
-    setCursosAcessados(novaLista);
-    localStorage.setItem("cursosAcessados", JSON.stringify(novaLista));
-
-    // 3) redireciona para a rota de Cursos
-    router.push("/cursos");          // <<< IR PARA PaginaCursos
+    setCursoSelecionado(curso);
+    setModalAberta(true);
   };
 
-  // 4) Dividir a lista de cursos entre:
-  //    - cursosDisponiveis: todos os cursos que ainda NÃO foram acessados
-  //    - cursosMatriculados: só os cursos cujos IDs estão em cursosAcessados
+  const fecharModal = () => {
+    setModalAberta(false);
+    setCursoSelecionado(null);
+  };
+
   const cursosDisponiveis = cursos.filter((c) => !cursosAcessados.includes(c.id!));
   const cursosMatriculados = cursos.filter((c) => cursosAcessados.includes(c.id!));
 
-  // Função auxiliar para renderizar um card de curso
   const renderCardCurso = (curso: Curso, isDisponivel: boolean) => {
     return (
       <div
         key={curso.id}
         className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col border border-gray-200 overflow-hidden"
       >
-        {/* Imagem de capa ou Placeholder */}
         {curso.capaCurso ? (
           <img
             src={`http://localhost:8080/uploads/${curso.capaCurso}`}
@@ -122,13 +121,15 @@ export default function DashboardEstudantePage() {
                 })}
               </p>
             )}
-            {curso.tags && <p>Tags: <span className="italic">{curso.tags}</span></p>}
+            {curso.tags && (
+              <p>
+                Tags: <span className="italic">{curso.tags}</span>
+              </p>
+            )}
           </div>
 
           <div className="mt-auto pt-3">
-            {curso.categoria === "aovivo" /* && curso.zoomLink */ ? (
-              // Se você tiver zoomLink no back-end:
-              // reposicione aqui: curso.zoomLink
+            {curso.categoria === "aovivo" ? (
               <a
                 href={curso.zoomLink}
                 target="_blank"
@@ -138,23 +139,14 @@ export default function DashboardEstudantePage() {
                 Entrar na Reunião
               </a>
             ) : (
-              // Se for curso básico (ou não há Zoom), mostramos "Acessar Curso"
+              // Mesmo "Já Acessado" não fica desabilitado. Sempre chama handleAbrirModal
               <button
-                onClick={() => {
-                  if (isDisponivel) {
-                    handleAcessarCurso(curso.id!);
-                  } else {
-                    // Já está acessado: você pode navegar para a página
-                    // detalhada do curso, por exemplo:
-                    // router.push(`/cursos/${curso.id}`)
-                  }
-                }}
+                onClick={() => handleAbrirModal(curso)}
                 className={`w-full px-4 py-2 rounded-md text-sm font-medium transition ${
                   isDisponivel
                     ? "bg-[#281719] text-white hover:brightness-125"
-                    : "bg-gray-300 text-gray-600 cursor-default"
+                    : "bg-[#281719] text-white hover:brightness-90"
                 }`}
-                disabled={!isDisponivel}
               >
                 {isDisponivel ? "Acessar Curso" : "Já Acessado"}
               </button>
@@ -165,7 +157,6 @@ export default function DashboardEstudantePage() {
     );
   };
 
-  // Exibe Loading ou Mensagem de Erro, se necessário
   if (carregando) {
     return (
       <p className="text-gray-600 text-center mt-8">Carregando cursos...</p>
@@ -177,7 +168,7 @@ export default function DashboardEstudantePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4">
-      {/* ============== A seção “O QUE APRENDER EM SEGUIDA” ============== */}
+      {/* Seção “O QUE APRENDER EM SEGUIDA” */}
       <section className="mb-10">
         <h2 className="text-2xl font-bold text-[#281719] mb-1 mt-2">
           O QUE APRENDER EM SEGUIDA
@@ -186,7 +177,6 @@ export default function DashboardEstudantePage() {
 
         <div className="flex gap-4 overflow-x-auto pb-2">
           {cursosDisponiveis.length > 0 ? (
-            // Exibe todos os cursos disponíveis (ou apenas os primeiros 3, se preferir)
             cursosDisponiveis.slice(0, 3).map((c) => (
               <div key={c.id} className="w-60 flex-shrink-0">
                 {renderCardCurso(c, true)}
@@ -200,7 +190,7 @@ export default function DashboardEstudantePage() {
         </div>
       </section>
 
-      {/* ============== A seção “MEUS APRENDIZADOS” ============== */}
+      {/* Seção “MEUS APRENDIZADOS” */}
       <section>
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl font-bold text-[#281719]">MEUS APRENDIZADOS</h2>
@@ -218,6 +208,138 @@ export default function DashboardEstudantePage() {
           )}
         </div>
       </section>
+
+      {/* Modal de detalhes do curso */}
+      {modalAberta && cursoSelecionado && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white w-11/12 max-w-3xl rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
+            {/* Cabeçalho da modal */}
+            <div className="flex justify-between items-center px-6 py-4 border-b">
+              <h3 className="text-xl font-semibold text-[#281719]">
+                {cursoSelecionado.titulo}
+              </h3>
+              <button onClick={fecharModal} className="text-gray-600 hover:text-gray-800">
+                <FaTimes size={20} />
+              </button>
+            </div>
+
+            {/* Corpo com todas as informações */}
+            <div className="p-6 space-y-4">
+              {/* Imagem de capa, se existir */}
+              {cursoSelecionado.capaCurso && (
+                <img
+                  src={`http://localhost:8080/uploads/${cursoSelecionado.capaCurso}`}
+                  alt={`Capa do curso ${cursoSelecionado.titulo}`}
+                  className="w-full h-56 object-cover rounded-md"
+                />
+              )}
+
+              {/* Descrição detalhada */}
+              <div>
+                <h4 className="text-lg font-medium text-[#281719] mb-1">Descrição do Curso</h4>
+                <p className="text-gray-700 whitespace-pre-line">
+                  {cursoSelecionado.descricaoConteudo}
+                </p>
+              </div>
+
+              {/* Informação curta e categoria */}
+              <div className="flex flex-wrap gap-4">
+                <span className="text-sm bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                  {cursoSelecionado.descricaoCurta}
+                </span>
+                <span
+                  className={`text-sm font-semibold px-2 py-1 rounded-full ${
+                    cursoSelecionado.categoria === "aovivo"
+                      ? "bg-blue-100 text-blue-800"
+                      : "bg-green-100 text-green-800"
+                  }`}
+                >
+                  {cursoSelecionado.categoria === "aovivo" ? "Ao vivo" : "Básico"}
+                </span>
+              </div>
+
+              {/* Docente e data de início */}
+              <div className="text-sm text-gray-600 space-y-1">
+                {cursoSelecionado.docente && <p>Docente: {cursoSelecionado.docente}</p>}
+                {cursoSelecionado.dataInicio && (
+                  <p>
+                    Data de Início:{" "}
+                    {new Date(cursoSelecionado.dataInicio!).toLocaleDateString("pt-BR", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                )}
+                {cursoSelecionado.tags && (
+                  <p>
+                    Tags: <span className="italic">{cursoSelecionado.tags}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Material de apoio (link de download), se existir */}
+              {cursoSelecionado.materialApoio && (
+                <div>
+                  <h4 className="text-lg font-medium text-[#281719] mb-1">Material de Apoio</h4>
+                  <a
+                    href={`http://localhost:8080/uploads/${cursoSelecionado.materialApoio}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#281719] hover:underline"
+                  >
+                    {cursoSelecionado.materialApoio}
+                  </a>
+                </div>
+              )}
+
+              {/* Se for curso ao vivo, detalhes de Zoom */}
+              {cursoSelecionado.categoria === "aovivo" && (
+                <div className="space-y-2">
+                  <h4 className="text-lg font-medium text-[#281719] mb-1">Detalhes da Reunião</h4>
+                  {cursoSelecionado.zoomLink && (
+                    <p>
+                      Link:{" "}
+                      <a
+                        href={cursoSelecionado.zoomLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#281719] hover:underline"
+                      >
+                        Entrar na Reunião
+                      </a>
+                    </p>
+                  )}
+                  {cursoSelecionado.zoomDataHora && (
+                    <p>
+                      Data e Hora:{" "}
+                      {new Date(cursoSelecionado.zoomDataHora!).toLocaleString("pt-BR", {
+                        day: "2-digit",
+                        month: "long",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  )}
+                  {cursoSelecionado.zoomDuracao && (
+                    <p>Duração: {cursoSelecionado.zoomDuracao} minutos</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Rodapé da modal */}
+            <div className="flex justify-end px-6 py-4 border-t">
+              <button
+                onClick={fecharModal}
+                className="bg-[#281719] text-white px-4 py-2 rounded hover:brightness-110 transition"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

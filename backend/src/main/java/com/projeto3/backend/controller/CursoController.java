@@ -60,17 +60,15 @@ public class CursoController {
     }
 
     private String salvarArquivo(MultipartFile file) throws IOException {
-        String pasta = "uploads/";
+        String pasta = System.getProperty("user.dir") + "/uploads/";
         File dir = new File(pasta);
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        
         String nomeArquivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         String caminho = pasta + nomeArquivo;
         File destino = new File(caminho);
         file.transferTo(destino);
-        
         return nomeArquivo;
     }
 
